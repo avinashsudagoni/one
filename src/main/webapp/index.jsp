@@ -622,7 +622,7 @@
     <!-- HERO -->
     <section class="hero">
         <div class="hero-content">
-            <h1>Premium Shopping Experience</h1>
+            <h1>Ultra Premium Shopping Experience</h1>
             <p>Discover premium products with amazing offers, modern designs and lightning-fast delivery.</p>
             <button class="btn btn-primary">Shop Now</button>
         </div>
