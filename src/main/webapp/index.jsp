@@ -565,7 +565,7 @@ tbody tr:last-child td { border:0; }
 <section class="heading">
   <div>
     <div class="eyebrow">Tuesday, October 13, 2026 · Live overview</div>
-    <h1 id="title">Good afternoon, DeviPriya <span style="animation:pulse 2s infinite;display:inline-block">✦</span></h1>
+    <h1 id="title">Good afternoon, Shiva <span style="animation:pulse 2s infinite;display:inline-block">✦</span></h1>
     <p id="subtitle">Here’s what’s happening with your store today.</p>
   </div>
   <div class="head-actions">
