@@ -1,1071 +1,944 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0a1020">
-<title>NexusIQ — Admin Command Center</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexusIQ Admin Dashboard</title>
 
-<style>
-:root {
-  --bg:#0a1020;
-  --surface:rgba(21,30,53,.78);
-  --solid:#151e35;
-  --text:#f0f4ff;
-  --muted:#94a2c0;
-  --line:rgba(158,180,235,.15);
-  --cyan:#58e2f5;
-  --violet:#9c7cff;
-  --green:#55e2ae;
-  --pink:#ff80be;
-  --amber:#ffc76c;
-  --shadow:0 20px 60px #0003;
-}
+  <style>
+    :root {
+      --primary: #635bff;
+      --primary-light: #efeeff;
+      --background: #f5f7fb;
+      --surface: #ffffff;
+      --text: #20283b;
+      --muted: #7b8498;
+      --border: #e7eaf1;
+      --green: #14866d;
+      --red: #c2415d;
+      --shadow: 0 8px 30px rgba(30, 40, 70, 0.06);
+    }
 
-body.light {
-  --bg:#edf1fb;
-  --surface:rgba(255,255,255,.82);
-  --solid:#fff;
-  --text:#17213a;
-  --muted:#66728d;
-  --line:rgba(70,91,140,.16);
-  --shadow:0 18px 50px #344c8118;
-}
+    body.dark {
+      --background: #101522;
+      --surface: #192131;
+      --text: #f0f3ff;
+      --muted: #a5afc4;
+      --border: #303a4d;
+      --primary-light: #302d56;
+      --shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+    }
 
-* { box-sizing:border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
-body {
-  margin:0;
-  background:
-    radial-gradient(ellipse at 10% 0%,#6759ff20,transparent 35%),
-    radial-gradient(ellipse at 90% 15%,#35d9f21a,transparent 30%),
-    var(--bg);
-  color:var(--text);
-  font:14px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
-  transition:background .25s,color .25s;
-}
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      background: var(--background);
+      color: var(--text);
+      transition: background 0.2s, color 0.2s;
+    }
 
-button,input,select { font:inherit; }
-button { cursor:pointer;color:inherit; }
+    button, input, select {
+      font: inherit;
+    }
 
-.sidebar {
-  position:fixed;
-  inset:0 auto 0 0;
-  width:238px;
-  padding:24px 16px;
-  border-right:1px solid var(--line);
-  background:var(--surface);
-  backdrop-filter:blur(22px);
-  z-index:10;
-  display:flex;
-  flex-direction:column;
-  transition:transform .3s;
-}
+    button {
+      cursor: pointer;
+    }
 
-.brand {
-  display:flex;
-  gap:11px;
-  align-items:center;
-  padding:0 9px 30px;
-  color:var(--text);
-  text-decoration:none;
-}
+    .sidebar {
+      width: 245px;
+      position: fixed;
+      inset: 0 auto 0 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 25px 16px;
+      display: flex;
+      flex-direction: column;
+      z-index: 10;
+    }
 
-.mark {
-  height:40px;
-  width:40px;
-  border-radius:14px;
-  background:linear-gradient(135deg,var(--cyan),var(--violet));
-  display:grid;
-  place-items:center;
-  color:#071326;
-  font-size:22px;
-  font-weight:900;
-  box-shadow:0 8px 24px #6584ff40;
-}
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 8px 32px;
+      font-size: 20px;
+      font-weight: 800;
+    }
 
-.brand strong { font-size:17px;letter-spacing:-.5px; }
-.brand strong span { color:var(--cyan); }
-.sub { font-size:10px;letter-spacing:1.6px;color:var(--muted);text-transform:uppercase; }
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #635bff, #ad63f5);
+      color: white;
+    }
 
-.nav-label {
-  font-size:10px;
-  text-transform:uppercase;
-  letter-spacing:1.6px;
-  color:var(--muted);
-  padding:10px 13px;
-}
+    .brand small {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 3px;
+      letter-spacing: 1px;
+    }
 
-.nav { display:grid;gap:5px; }
+    .nav-label {
+      padding: 10px 12px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
 
-.nav button {
-  border:1px solid transparent;
-  background:none;
-  text-align:left;
-  color:var(--muted);
-  padding:11px 13px;
-  border-radius:12px;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  transition:.2s;
-}
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 5px;
+      color: var(--muted);
+      background: transparent;
+      border: 0;
+      border-radius: 11px;
+      text-align: left;
+      font-weight: 600;
+    }
 
-.nav button:hover,.nav button.active {
-  background:linear-gradient(100deg,#58e2f51a,#9c7cff18);
-  color:var(--text);
-  border-color:#58e2f525;
-  transform:translateX(2px);
-}
+    .nav-btn:hover,
+    .nav-btn.active {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
 
-.nav .ico { font-size:17px;width:19px;text-align:center; }
+    .sidebar-bottom {
+      margin-top: auto;
+      padding: 14px;
+      border: 1px solid var(--border);
+      background: var(--background);
+      border-radius: 14px;
+    }
 
-.count {
-  margin-left:auto;
-  color:var(--pink);
-  background:#ff80be1b;
-  border-radius:7px;
-  padding:2px 7px;
-  font-size:10px;
-}
+    .sidebar-bottom p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
 
-.workspace {
-  margin-top:auto;
-  border:1px solid var(--line);
-  background:var(--surface);
-  border-radius:16px;
-  padding:14px;
-  margin-bottom:15px;
-}
+    .main {
+      margin-left: 245px;
+      min-height: 100vh;
+    }
 
-.workhead { display:flex;gap:9px;align-items:center; }
-.workicon {
-  width:32px;height:32px;border-radius:10px;
-  background:linear-gradient(135deg,#ffbd70,#ff80be);
-  display:grid;place-items:center;color:#251128;
-}
+    .topbar {
+      min-height: 76px;
+      padding: 15px 30px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
 
-.workspace small,.user small { color:var(--muted); }
-.usage { display:flex;justify-content:space-between;color:var(--muted);font-size:10px;margin-top:14px; }
-.progress { height:5px;background:var(--line);border-radius:9px;margin-top:7px;overflow:hidden; }
-.progress span { display:block;width:68%;height:100%;background:linear-gradient(90deg,var(--cyan),var(--violet)); }
+    .page-title {
+      margin-right: auto;
+    }
 
-.user {
-  display:flex;align-items:center;gap:10px;
-  border-top:1px solid var(--line);padding:13px 6px 0;
-}
+    .page-title h1 {
+      font-size: 20px;
+      margin: 0;
+    }
 
-.avatar {
-  width:36px;height:36px;border-radius:50%;
-  background:linear-gradient(135deg,#637bff,#c16cff);
-  display:grid;place-items:center;color:white;font-weight:800;flex:none;
-}
+    .page-title p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
 
-.user small { display:block; }
-.more { margin-left:auto;border:0;background:none;color:var(--muted);font-size:19px; }
+    .search {
+      width: 240px;
+      padding: 10px 12px;
+      color: var(--text);
+      background: var(--background);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
 
-main { margin-left:238px;padding:0 30px 34px;max-width:1800px; }
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: var(--surface);
+      color: var(--text);
+    }
 
-.topbar {
-  height:78px;
-  border-bottom:1px solid var(--line);
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:26px;
-}
+    .avatar {
+      width: 39px;
+      height: 39px;
+      border-radius: 50%;
+      background: #dcd7ff;
+      color: #4135a5;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+    }
 
-.crumb { font-size:12px;color:var(--muted); }
-.crumb b { color:var(--text); }
-.actions { display:flex;align-items:center;gap:9px; }
+    .content {
+      padding: 28px;
+      max-width: 1600px;
+      margin: auto;
+    }
 
-.iconbtn,.btn,.select {
-  border:1px solid var(--line);
-  background:var(--surface);
-  border-radius:11px;
-  color:var(--text);
-  padding:10px 12px;
-  transition:.2s;
-}
+    .welcome {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
 
-.iconbtn {
-  width:39px;height:39px;
-  display:grid;place-items:center;
-  position:relative;
-}
+    .welcome h2 {
+      margin: 0;
+      font-size: 25px;
+    }
 
-.iconbtn:hover,.btn:hover {
-  transform:translateY(-2px);
-  border-color:#58e2f577;
-}
+    .welcome p {
+      color: var(--muted);
+      margin: 7px 0 0;
+    }
 
-.dot {
-  position:absolute;right:7px;top:7px;
-  width:6px;height:6px;border-radius:50%;
-  background:var(--pink);
-}
+    .button {
+      padding: 10px 15px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 700;
+    }
 
-.search { position:relative; }
-.search input {
-  width:220px;
-  padding:10px 12px 10px 35px;
-  background:var(--surface);
-  border:1px solid var(--line);
-  border-radius:11px;
-  color:var(--text);
-  outline:none;
-  transition:.2s;
-}
-.search input:focus { width:255px;border-color:var(--cyan); }
-.search span { position:absolute;left:12px;top:8px;color:var(--muted);font-size:19px; }
-.mobile { display:none; }
+    .button.primary {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
 
-.heading {
-  display:flex;align-items:flex-end;justify-content:space-between;
-  gap:18px;margin-bottom:22px;
-}
+    .button:hover {
+      opacity: 0.9;
+    }
 
-.eyebrow {
-  color:var(--cyan);font-size:10px;letter-spacing:1.8px;
-  text-transform:uppercase;font-weight:800;margin-bottom:7px;
-}
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
 
-h1 { font-size:clamp(25px,3vw,34px);letter-spacing:-1.2px;line-height:1.15;margin:0; }
-.heading p { margin:8px 0 0;color:var(--muted);font-size:13px; }
-.head-actions { display:flex;align-items:center;gap:8px; }
-.select { font-size:12px; }
-.btn { font-size:12px;font-weight:700; }
+    .stats {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-bottom: 20px;
+    }
 
-.primary {
-  background:linear-gradient(110deg,var(--cyan),var(--violet));
-  border:0;color:#091327;
-  box-shadow:0 8px 24px #708aff2b;
-}
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      box-shadow: var(--shadow);
+      min-width: 0;
+    }
 
-.grid { display:grid;gap:16px; }
-.metrics { grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:16px; }
+    .stat {
+      padding: 20px;
+    }
 
-.panel {
-  min-width:0;
-  background:var(--surface);
-  border:1px solid var(--line);
-  border-radius:21px;
-  backdrop-filter:blur(18px);
-  box-shadow:var(--shadow);
-  animation:rise .5s both;
-  transition:border-color .25s,transform .25s;
-}
+    .stat-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
 
-.panel:hover { border-color:#8cb9ff42; }
+    .stat-icon {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: 18px;
+    }
 
-.metric { padding:18px;position:relative;overflow:hidden; }
-.metric:after {
-  content:"";position:absolute;right:-35px;top:-45px;
-  width:95px;height:95px;border-radius:50%;
-  background:var(--glow,#58e2f51c);filter:blur(5px);
-}
+    .stat-value {
+      font-size: 27px;
+      font-weight: 800;
+      margin: 14px 0 8px;
+      letter-spacing: -1px;
+    }
 
-.metric-top {
-  display:flex;align-items:center;justify-content:space-between;
-  color:var(--muted);font-size:12px;position:relative;z-index:1;
-}
+    .stat-note {
+      font-size: 11px;
+      color: var(--muted);
+    }
 
-.metric-icon {
-  width:32px;height:32px;border-radius:10px;
-  background:var(--iconbg,#58e2f51c);
-  color:var(--iconcolor,var(--cyan));
-  display:grid;place-items:center;font-size:16px;
-}
+    .positive {
+      color: var(--green);
+      font-weight: 700;
+    }
 
-.value {
-  font-size:clamp(22px,2vw,28px);
-  font-weight:850;letter-spacing:-1px;
-  margin:14px 0 4px;position:relative;z-index:1;
-}
+    .charts {
+      grid-template-columns: minmax(0, 1.6fr) minmax(260px, 1fr);
+      margin-bottom: 20px;
+    }
 
-.metric-foot { display:flex;align-items:center;gap:6px;color:var(--muted);font-size:10px; }
-.up { color:var(--green);font-weight:800; }
-.down { color:var(--pink);font-weight:800; }
-.spark { margin-left:auto;width:60px;height:23px; }
+    .card-header {
+      padding: 20px 20px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
 
-.middle { grid-template-columns:minmax(0,1.65fr) minmax(270px,.9fr);margin-bottom:16px; }
-.lower { grid-template-columns:minmax(0,1.4fr) minmax(270px,.85fr); }
+    .card-header h3 {
+      margin: 0;
+      font-size: 15px;
+    }
 
-.panel-head {
-  display:flex;align-items:center;justify-content:space-between;
-  gap:10px;padding:19px 20px 0;
-}
+    .card-header p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
 
-.panel-title { font-size:14px;font-weight:800; }
-.panel-sub { font-size:11px;color:var(--muted);margin-top:3px; }
+    .chart-content {
+      padding: 8px 20px 20px;
+    }
 
-.range {
-  border:0;background:none;color:var(--muted);
-  padding:6px 9px;border-radius:8px;font-size:10px;font-weight:800;
-}
-.range.active { color:var(--cyan);background:#58e2f51b; }
+    .chart-value {
+      font-size: 25px;
+      font-weight: 800;
+      margin: 0 0 12px;
+    }
 
-.summary { display:flex;align-items:baseline;gap:9px;margin:7px 0 0; }
-.summary strong { font-size:24px;letter-spacing:-.8px; }
-.summary span { font-size:11px;color:var(--green); }
+    .chart {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
 
-.chart-wrap { padding:12px 15px 15px; }
-.chart { width:100%;height:210px;display:block;overflow:visible; }
-.chart text { fill:var(--muted);font-size:10px; }
-.chart .gridline { stroke:var(--line);stroke-dasharray:3 5; }
-.chart .line {
-  fill:none;stroke:var(--cyan);stroke-width:3;
-  stroke-linecap:round;stroke-linejoin:round;
-  filter:drop-shadow(0 4px 6px #58e2f533);
-}
-.chart .line2 {
-  fill:none;stroke:var(--violet);stroke-width:2.5;
-  stroke-linecap:round;stroke-linejoin:round;
-}
+    .chart-grid {
+      stroke: var(--border);
+      stroke-dasharray: 4 5;
+    }
 
-.legend {
-  display:flex;justify-content:center;gap:18px;
-  color:var(--muted);font-size:10px;
-}
-.legend i {
-  display:inline-block;width:7px;height:7px;
-  border-radius:50%;background:var(--cyan);margin-right:6px;
-}
-.legend i.v { background:var(--violet); }
+    .chart-label {
+      fill: var(--muted);
+      font-size: 11px;
+    }
 
-.channels { padding:16px 20px 20px;display:grid;gap:16px; }
-.channel {
-  display:grid;grid-template-columns:34px 1fr auto;
-  align-items:center;gap:10px;
-}
-.channel-icon {
-  width:34px;height:34px;border-radius:11px;
-  background:#9c7cff20;color:var(--violet);
-  display:grid;place-items:center;
-}
-.channel:nth-child(2) .channel-icon { background:#58e2f51b;color:var(--cyan); }
-.channel:nth-child(3) .channel-icon { background:#55e2ae1b;color:var(--green); }
-.channel:nth-child(4) .channel-icon { background:#ff80be1b;color:var(--pink); }
-.channel-name { font-size:12px;font-weight:750; }
-.channel-meta { font-size:10px;color:var(--muted);margin-top:2px; }
-.channel-val { font-size:12px;font-weight:800;text-align:right; }
-.channel-change { font-size:10px;color:var(--green);text-align:right;margin-top:2px; }
+    .traffic {
+      padding: 10px 20px 22px;
+    }
 
-.table-wrap { overflow:auto;padding:8px 18px 16px; }
-table { border-collapse:collapse;width:100%;white-space:nowrap; }
-th {
-  text-align:left;color:var(--muted);font-size:10px;
-  text-transform:uppercase;letter-spacing:.7px;
-  padding:13px 9px;border-bottom:1px solid var(--line);
-}
-td { padding:13px 9px;font-size:11px;border-bottom:1px solid var(--line); }
-tbody tr { transition:background .2s; }
-tbody tr:hover { background:var(--surface); }
-tbody tr:last-child td { border:0; }
+    .traffic-row {
+      margin: 17px 0;
+    }
 
-.customer { display:flex;align-items:center;gap:8px;font-weight:700; }
-.mini {
-  width:28px;height:28px;border-radius:9px;
-  background:linear-gradient(135deg,#617dff,#bd78ff);
-  color:#fff;display:grid;place-items:center;font-size:10px;font-weight:800;
-}
-.mini.orange { background:linear-gradient(135deg,#ffbd70,#ff80be); }
-.mini.green { background:linear-gradient(135deg,#48dcb1,#42b9dc); }
-.mini.blue { background:linear-gradient(135deg,#50d5f2,#6278ff); }
+    .traffic-heading {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
 
-.status {
-  display:inline-flex;align-items:center;gap:5px;
-  padding:4px 8px;border-radius:7px;font-size:10px;font-weight:800;
-}
-.status:before { content:"";width:5px;height:5px;border-radius:50%;background:currentColor; }
-.paid { color:var(--green);background:#55e2ae19; }
-.pending { color:var(--amber);background:#ffc76c1b; }
-.failed { color:var(--pink);background:#ff80be1b; }
+    .traffic-heading span {
+      color: var(--muted);
+    }
 
-.view { border:0;background:none;color:var(--cyan);font-weight:800;font-size:11px; }
-.empty { display:none;padding:24px;text-align:center;color:var(--muted); }
+    .progress {
+      height: 8px;
+      background: var(--background);
+      border-radius: 20px;
+      overflow: hidden;
+    }
 
-.activity-list { padding:18px 20px 20px;display:grid;gap:17px; }
-.activity { display:grid;grid-template-columns:34px 1fr;gap:10px;position:relative; }
-.activity:not(:last-child):after {
-  content:"";position:absolute;left:16px;top:36px;bottom:-14px;
-  width:1px;background:var(--line);
-}
-.activity-icon {
-  width:34px;height:34px;border-radius:11px;
-  display:grid;place-items:center;background:#58e2f51b;color:var(--cyan);
-}
-.activity:nth-child(2) .activity-icon { background:#9c7cff20;color:var(--violet); }
-.activity:nth-child(3) .activity-icon { background:#55e2ae1b;color:var(--green); }
-.activity:nth-child(4) .activity-icon { background:#ff80be1b;color:var(--pink); }
-.activity p { margin:2px 0 4px;font-size:11px; }
-.activity time { font-size:10px;color:var(--muted); }
+    .progress div {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), #ac75f4);
+      border-radius: inherit;
+    }
 
-.toast {
-  position:fixed;right:22px;bottom:22px;
-  background:var(--solid);border:1px solid #58e2f555;
-  border-radius:13px;padding:13px 17px;box-shadow:var(--shadow);
-  z-index:50;opacity:0;transform:translateY(12px);
-  pointer-events:none;transition:.25s;
-}
-.toast.show { opacity:1;transform:translateY(0); }
+    .table-card {
+      overflow: hidden;
+    }
 
-.modal-bg {
-  position:fixed;inset:0;z-index:40;background:#030713aa;
-  backdrop-filter:blur(8px);display:none;place-items:center;padding:18px;
-}
-.modal-bg.open { display:grid;animation:fade .2s; }
-.modal {
-  width:min(430px,100%);padding:23px;background:var(--solid);
-  border:1px solid var(--line);border-radius:20px;
-  box-shadow:var(--shadow);animation:rise .25s;
-}
-.modal-head { display:flex;justify-content:space-between;align-items:center; }
-.modal h2 { font-size:19px;margin:0; }
-.field { display:grid;gap:6px;margin-top:15px; }
-.field label { font-size:11px;color:var(--muted);font-weight:750; }
-.field input,.field select {
-  padding:11px;border:1px solid var(--line);
-  background:var(--bg);color:var(--text);
-  border-radius:10px;outline:none;width:100%;
-}
-.field input:focus,.field select:focus { border-color:var(--cyan); }
-.modal-actions { display:flex;justify-content:flex-end;gap:8px;margin-top:20px; }
-.close {
-  width:31px;height:31px;border:1px solid var(--line);
-  border-radius:9px;background:var(--surface);
-}
-.mobile-overlay { display:none; }
+    .table-wrap {
+      overflow-x: auto;
+    }
 
-@keyframes rise {
-  from { opacity:0;transform:translateY(13px); }
-  to { opacity:1;transform:translateY(0); }
-}
-@keyframes fade { from { opacity:0; } to { opacity:1; } }
-@keyframes pulse { 50% { box-shadow:0 0 0 7px #58e2f500; } }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 620px;
+    }
 
-.metrics .panel:nth-child(2) { animation-delay:.06s; }
-.metrics .panel:nth-child(3) { animation-delay:.12s; }
-.metrics .panel:nth-child(4) { animation-delay:.18s; }
-.middle .panel:nth-child(2),.lower .panel:nth-child(2) { animation-delay:.1s; }
+    th, td {
+      text-align: left;
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      white-space: nowrap;
+    }
 
-@media(max-width:1150px) {
-  .sidebar { width:215px; }
-  main { margin-left:215px;padding:0 22px 30px; }
-  .metrics { grid-template-columns:repeat(2,minmax(0,1fr)); }
-}
+    th {
+      color: var(--muted);
+      background: var(--background);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .7px;
+    }
 
-@media(max-width:850px) {
-  .sidebar { width:255px;transform:translateX(-105%); }
-  .sidebar.open { transform:translateX(0); }
-  .mobile-overlay.show {
-    display:block;position:fixed;inset:0;background:#03071399;z-index:9;
-  }
-  main { margin-left:0;padding:0 20px 28px; }
-  .mobile { display:grid; }
-  .middle,.lower { grid-template-columns:1fr; }
-  .search input { width:180px; }
-  .search input:focus { width:210px; }
-}
+    td {
+      font-size: 12px;
+    }
 
-@media(max-width:560px) {
-  main { padding:0 13px 24px; }
-  .topbar { height:68px;margin-bottom:21px; }
-  .crumb,.search { display:none; }
-  .heading { align-items:flex-start;flex-direction:column; }
-  .head-actions { width:100%; }
-  .head-actions .primary { margin-left:auto; }
-  .metrics { gap:10px; }
-  .metric { padding:13px; }
-  .metric-top { font-size:10px; }
-  .metric-icon { width:28px;height:28px; }
-  .value { font-size:22px;margin-top:11px; }
-  .metric-foot { font-size:9px;flex-wrap:wrap; }
-  .spark { display:none; }
-  .panel-head { padding:16px 15px 0; }
-  .chart-wrap { padding:10px 7px; }
-  .chart { height:180px; }
-  .channels,.activity-list { padding:16px 15px; }
-  .table-wrap { padding:8px 10px 13px; }
-  .actions { gap:6px; }
-  .iconbtn { width:35px;height:35px; }
-  .select { max-width:130px; }
-  .heading p { font-size:12px; }
-}
+    .customer {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-@media(prefers-reduced-motion:reduce) {
-  *,*:before,*:after {
-    animation-duration:.01ms!important;
-    transition-duration:.01ms!important;
-    scroll-behavior:auto!important;
-  }
-}
-</style>
+    .customer-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      color: var(--primary);
+      background: var(--primary-light);
+      font-weight: 800;
+    }
+
+    .customer strong {
+      display: block;
+    }
+
+    .customer small {
+      display: block;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .status.Paid, .status.Delivered {
+      color: var(--green);
+      background: color-mix(in srgb, var(--green) 12%, var(--surface));
+    }
+
+    .status.Pending {
+      color: #a8660a;
+      background: #fff2d8;
+    }
+
+    .status.Cancelled {
+      color: var(--red);
+      background: color-mix(in srgb, var(--red) 12%, var(--surface));
+    }
+
+    .text-button {
+      border: 0;
+      background: transparent;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .bottom-grid {
+      grid-template-columns: 1fr 1fr;
+      margin-top: 20px;
+    }
+
+    .activity-list {
+      padding: 8px 20px 20px;
+    }
+
+    .activity-item {
+      display: flex;
+      gap: 12px;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+    }
+
+    .activity-item:last-child {
+      border-bottom: 0;
+    }
+
+    .activity-symbol {
+      flex: 0 0 34px;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: var(--background);
+      display: grid;
+      place-items: center;
+    }
+
+    .activity-item small {
+      display: block;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    .quick-actions {
+      padding: 10px 20px 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 11px;
+    }
+
+    .quick-action {
+      text-align: left;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--background);
+      color: var(--text);
+    }
+
+    .quick-action:hover {
+      border-color: var(--primary);
+    }
+
+    .quick-action strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 12px;
+    }
+
+    .quick-action small {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .page-panel { display: none; }
+    .page-panel.active { display: block; }
+    .muted { color: var(--muted); }
+    .hidden { display: none !important; }
+
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      padding: 18px;
+      background: rgba(10, 15, 28, .55);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-backdrop.show { display: flex; }
+
+    .modal {
+      width: min(460px, 100%);
+      max-height: 90vh;
+      overflow: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 25px 70px rgba(0,0,0,.2);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .modal-header h3 { margin: 0; }
+    .field { display: grid; gap: 6px; margin-top: 15px; }
+    .field label { font-weight: 700; font-size: 12px; }
+    .field input, .field select {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: var(--background);
+      color: var(--text);
+      padding: 11px;
+      border-radius: 10px;
+    }
+
+    .modal-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:20px; }
+    .toast-area { position:fixed; right:18px; bottom:18px; z-index:80; display:grid; gap:8px; }
+    .toast { background:var(--text); color:var(--surface); padding:12px 15px; border-radius:11px; box-shadow:var(--shadow); max-width:340px; }
+    .empty { padding:30px; text-align:center; color:var(--muted); }
+    .mobile-menu { display:none; }
+
+    @media (max-width:1150px) {
+      .stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .charts { grid-template-columns:1fr; }
+    }
+
+    @media (max-width:850px) {
+      .sidebar { transform:translateX(-100%); box-shadow:var(--shadow); }
+      body.menu-open .sidebar { transform:translateX(0); }
+      body.menu-open .overlay { display:block; }
+      .main { margin-left:0; }
+      .mobile-menu { display:inline-grid; place-items:center; flex:0 0 40px; }
+      .overlay { display:none; position:fixed; inset:0; background:rgba(10,15,28,.45); z-index:8; }
+      .bottom-grid { grid-template-columns:1fr; }
+      .topbar { padding:14px 18px; }
+      .content { padding:22px 18px; }
+    }
+
+    @media (max-width:560px) {
+      .topbar { gap:8px; }
+      .page-title h1 { font-size:17px; }
+      .page-title p { display:none; }
+      .search { display:none; }
+      .content { padding:18px 12px 28px; }
+      .welcome { flex-direction:column; align-items:flex-start; }
+      .welcome h2 { font-size:21px; }
+      .welcome .actions { display:flex; width:100%; }
+      .welcome .actions .button { flex:1; }
+      .stats { gap:10px; }
+      .stat { padding:14px; }
+      .stat-value { font-size:22px; }
+      .stat-heading { align-items:flex-start; }
+      .stat-icon { width:30px; height:30px; }
+      .card-header { padding:16px 15px 10px; }
+      .chart-content,.traffic,.activity-list,.quick-actions { padding-left:15px; padding-right:15px; }
+      .quick-actions { gap:8px; }
+      .quick-action { padding:11px; }
+    }
+  </style>
 </head>
-
 <body>
-<div class="mobile-overlay" id="overlay"></div>
-
-<aside class="sidebar" id="sidebar">
-  <a class="brand" href="#">
-    <div class="mark">N</div>
-    <div>
-      <strong>Nexus<span>IQ</span></strong>
-      <div class="sub">Command center</div>
+  <aside class="sidebar" aria-label="Main navigation">
+    <div class="brand">
+      <div class="brand-icon">N</div>
+      <div>NexusIQ<small>ADMIN DASHBOARD</small></div>
     </div>
-  </a>
-
-  <div class="nav-label">Workspace</div>
-  <nav class="nav" aria-label="Workspace">
-    <button class="active" data-page="Overview"><span class="ico">◈</span>Overview</button>
-    <button data-page="Analytics"><span class="ico">▥</span>Analytics</button>
-    <button data-page="Customers"><span class="ico">♙</span>Customers <span class="count">8</span></button>
-    <button data-page="Orders"><span class="ico">▤</span>Orders</button>
-    <button data-page="Products"><span class="ico">◇</span>Products</button>
-  </nav>
-
-  <div class="nav-label" style="margin-top:22px">Manage</div>
-  <nav class="nav" aria-label="Management">
-    <button data-page="Reports"><span class="ico">▧</span>Reports</button>
-    <button data-page="Integrations"><span class="ico">⤢</span>Integrations</button>
-    <button data-page="Settings"><span class="ico">⚙</span>Settings</button>
-  </nav>
-
-  <div class="workspace">
-    <div class="workhead">
-      <div class="workicon">✦</div>
-      <div><b>Nexus Studio</b><br><small>Pro workspace</small></div>
+    <div class="nav-label">Workspace</div>
+    <nav class="nav">
+      <button class="nav-btn active" data-page="overview"><span>▦</span> Overview</button>
+      <button class="nav-btn" data-page="orders"><span>▤</span> Orders <span style="margin-left:auto" class="nav-count" id="navOrderCount">7</span></button>
+      <button class="nav-btn" data-page="customers"><span>♙</span> Customers</button>
+      <button class="nav-btn" data-page="analytics"><span>◫</span> Analytics</button>
+      <button class="nav-btn" data-page="reports"><span>▧</span> Reports</button>
+    </nav>
+    <div class="nav-label" style="margin-top:22px">Preferences</div>
+    <button class="nav-btn" id="sidebarTheme"><span>◐</span> Toggle appearance</button>
+    <button class="nav-btn" id="helpButton"><span>ⓘ</span> Help & support</button>
+    <div style="margin-top:auto;padding:12px 8px;color:var(--muted);font-size:11px">
+      <strong style="color:var(--text)">NexusIQ Admin</strong><br>Standalone demo · Sample data
     </div>
-    <div class="usage"><span>Monthly usage</span><b>68%</b></div>
-    <div class="progress"><span></span></div>
+  </aside>
+  <div class="overlay" id="overlay"></div>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="icon-button mobile-menu" id="menuButton" aria-label="Open menu" aria-expanded="false">☰</button>
+      <div class="page-title"><h1 id="pageTitle">Overview</h1><p id="pageSubtitle">Here’s what’s happening with your store.</p></div>
+      <input class="search" id="searchInput" type="search" placeholder="Search orders or customers…" aria-label="Search orders or customers">
+      <button class="icon-button" id="notificationsButton" aria-label="Notifications">♧</button>
+      <button class="icon-button" id="themeButton" aria-label="Toggle dark mode">◐</button>
+      <div class="avatar" title="Admin profile">AS</div>
+    </header>
+
+    <div class="content">
+      <section class="page-panel active" id="panel-overview">
+        <div class="welcome">
+          <div><h2>Welcome back, Admin 👋</h2><p class="muted">Here’s your store performance at a glance.</p></div>
+          <div class="actions"><button class="button" id="periodButton">▦ <span id="periodLabel">Last 30 days</span> ▾</button><button class="button primary" id="exportSummary">↓ Export summary</button></div>
+        </div>
+
+        <div class="grid stats">
+          <article class="card stat"><div class="stat-heading">Total revenue <span class="stat-icon">₹</span></div><div class="stat-value" id="revenueValue">₹8,42,560</div><div class="stat-note"><span class="positive">↗ 12.8%</span> vs previous period</div></article>
+          <article class="card stat"><div class="stat-heading">Total orders <span class="stat-icon">▤</span></div><div class="stat-value" id="ordersValue">1,284</div><div class="stat-note"><span class="positive">↗ 8.4%</span> vs previous period</div></article>
+          <article class="card stat"><div class="stat-heading">Conversion rate <span class="stat-icon">◉</span></div><div class="stat-value">3.62%</div><div class="stat-note"><span class="positive">↗ 1.2%</span> vs previous period</div></article>
+          <article class="card stat"><div class="stat-heading">Active customers <span class="stat-icon">♙</span></div><div class="stat-value" id="activeCustomerValue">5,849</div><div class="stat-note">Based on sample data</div></article>
+        </div>
+
+        <div class="grid charts">
+          <section class="card">
+            <div class="card-header"><div><h3>Revenue overview</h3><p>Revenue and orders over time</p></div><select class="select" id="chartPeriod" aria-label="Chart period"><option value="week">This week</option><option value="month" selected>Last 30 days</option><option value="year">This year</option></select></div>
+            <div class="chart-content"><div class="chart-value" id="chartValue">₹8,42,560 <span class="positive" style="font-size:12px">↗ 12.8%</span></div>
+              <svg class="chart" viewBox="0 0 640 225" role="img" aria-label="Illustrative revenue and order trend">
+                <defs><linearGradient id="fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#756cf8" stop-opacity=".25"/><stop offset="100%" stop-color="#756cf8" stop-opacity="0"/></linearGradient></defs>
+                <g class="chart-grid"><line x1="45" y1="25" x2="620" y2="25"/><line x1="45" y1="70" x2="620" y2="70"/><line x1="45" y1="115" x2="620" y2="115"/><line x1="45" y1="160" x2="620" y2="160"/></g>
+                <g class="chart-label"><text x="1" y="29">₹30k</text><text x="1" y="74">₹20k</text><text x="1" y="119">₹10k</text><text x="19" y="164">₹0</text><text x="45" y="193">01</text><text x="155" y="193">06</text><text x="270" y="193">12</text><text x="380" y="193">18</text><text x="495" y="193">24</text><text x="600" y="193">30</text></g>
+                <path d="M45 142 L100 124 L157 130 L215 93 L273 108 L331 76 L389 88 L447 52 L505 69 L563 37 L620 48 L620 160 L45 160 Z" fill="url(#fill)"/>
+                <path d="M45 142 L100 124 L157 130 L215 93 L273 108 L331 76 L389 88 L447 52 L505 69 L563 37 L620 48" fill="none" stroke="#756cf8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M45 151 L100 143 L157 147 L215 127 L273 137 L331 115 L389 121 L447 104 L505 114 L563 95 L620 102" fill="none" stroke="#b5a6ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <div class="stat-note">● Revenue &nbsp; <span style="color:#b5a6ff">● Orders</span> · Sample chart</div>
+            </div>
+          </section>
+          <section class="card">
+            <div class="card-header"><div><h3>Traffic sources</h3><p>Where visitors come from</p></div><button class="text-button" id="trafficDetails">Details ↗</button></div>
+            <div class="traffic">
+              <div class="traffic-row"><div class="traffic-heading"><span>Direct</span><strong>38.4%</strong></div><div class="progress"><div style="width:38.4%"></div></div></div>
+              <div class="traffic-row"><div class="traffic-heading"><span>Organic search</span><strong>29.6%</strong></div><div class="progress"><div style="width:29.6%;opacity:.82"></div></div></div>
+              <div class="traffic-row"><div class="traffic-heading"><span>Social media</span><strong>19.2%</strong></div><div class="progress"><div style="width:19.2%;opacity:.68"></div></div></div>
+              <div class="traffic-row"><div class="traffic-heading"><span>Referral</span><strong>12.8%</strong></div><div class="progress"><div style="width:12.8%;opacity:.52"></div></div></div>
+            </div>
+          </section>
+        </div>
+
+        <section class="card table-card">
+          <div class="card-header"><div><h3>Recent orders</h3><p>Track your latest transactions</p></div><button class="text-button" data-goto="orders">View all →</button></div>
+          <div class="table-wrap"><table><thead><tr><th>Order</th><th>Customer</th><th>Date</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody id="recentOrders"></tbody></table></div>
+        </section>
+
+        <div class="grid bottom-grid">
+          <section class="card"><div class="card-header"><div><h3>Recent activity</h3><p>Latest store updates</p></div><button class="text-button" id="activityButton">View all</button></div><div class="activity-list" id="activityList">
+            <div class="activity-item"><div class="activity-symbol">✓</div><div><strong>Order NX-1048 delivered</strong><small>12 minutes ago · Fulfilment</small></div></div>
+            <div class="activity-item"><div class="activity-symbol">♙</div><div><strong>New customer joined</strong><small>38 minutes ago · Customers</small></div></div>
+            <div class="activity-item"><div class="activity-symbol">₹</div><div><strong>Payment received</strong><small>1 hour ago · Payments</small></div></div>
+          </div></section>
+          <section class="card"><div class="card-header"><div><h3>Quick actions</h3><p>Common tasks in one place</p></div></div><div class="quick-actions">
+            <button class="quick-action" id="createOrder"><span>＋</span><strong>Create an order</strong><small>Add a sample sale</small></button>
+            <button class="quick-action" id="createCustomer"><span>♙</span><strong>Add a customer</strong><small>Manage your customer list</small></button>
+            <button class="quick-action" id="openReports"><span>▧</span><strong>Generate report</strong><small>Export CSV data</small></button>
+            <button class="quick-action" id="openSettings"><span>⚙</span><strong>Dashboard settings</strong><small>Change appearance</small></button>
+          </div></section>
+        </div>
+      </section>
+
+      <section class="page-panel" id="panel-orders">
+        <div class="welcome"><div><h2>Orders</h2><p class="muted">Search, filter, and review transactions.</p></div><button class="button primary" id="ordersExport">↓ Export orders</button></div>
+        <section class="card table-card"><div class="card-header"><div><h3>All orders</h3><p id="orderCount">Orders in sample data</p></div><select class="select" id="statusFilter" aria-label="Filter order status"><option value="all">All statuses</option><option>Paid</option><option>Pending</option><option>Delivered</option><option>Cancelled</option></select></div><div class="table-wrap"><table><thead><tr><th>Order</th><th>Customer</th><th>Date</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody id="allOrders"></tbody></table></div><div id="ordersEmpty" class="empty hidden">No orders match your search.</div></section>
+      </section>
+
+      <section class="page-panel" id="panel-customers">
+        <div class="welcome"><div><h2>Customers</h2><p class="muted">Keep customer information organized.</p></div><button class="button primary" id="addCustomerPage">＋ Add customer</button></div>
+        <section class="card table-card"><div class="card-header"><div><h3>Customer directory</h3><p>Customer records in this demo</p></div></div><div class="table-wrap"><table><thead><tr><th>Customer</th><th>Orders</th><th>Total spent</th><th>Last order</th></tr></thead><tbody id="customerRows"></tbody></table></div></section>
+      </section>
+
+      <section class="page-panel" id="panel-analytics">
+        <div class="welcome"><div><h2>Analytics</h2><p class="muted">Understand the trends behind your store performance.</p></div><button class="button primary" id="analyticsExport">↓ Export analytics</button></div>
+        <div class="grid stats">
+          <article class="card stat"><div class="stat-heading">Average order value</div><div class="stat-value">₹656</div><div class="stat-note">Across demo orders</div></article>
+          <article class="card stat"><div class="stat-heading">Returning customers</div><div class="stat-value">42.7%</div><div class="stat-note">Sample metric</div></article>
+          <article class="card stat"><div class="stat-heading">Refund rate</div><div class="stat-value">1.8%</div><div class="stat-note">Sample metric</div></article>
+          <article class="card stat"><div class="stat-heading">Cart abandonment</div><div class="stat-value">24.3%</div><div class="stat-note">Sample metric</div></article>
+        </div>
+        <section class="card"><div class="card-header"><div><h3>Performance notes</h3><p>Illustrative observations from sample data</p></div></div><div class="activity-list"><div class="activity-item"><div class="activity-symbol">↗</div><div><strong>Revenue is trending upward.</strong><small>Compare against live data before making decisions.</small></div></div><div class="activity-item"><div class="activity-symbol">◎</div><div><strong>Direct visits are the largest traffic source.</strong><small>Consider comparing conversion rates by channel.</small></div></div></div></section>
+      </section>
+
+      <section class="page-panel" id="panel-reports">
+        <div class="welcome"><div><h2>Reports</h2><p class="muted">Export dashboard sample data as CSV files.</p></div></div>
+        <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr))">
+          <section class="card stat"><div class="stat-icon">▤</div><h3>Orders report</h3><p class="muted">Order number, customer, date, amount, and status.</p><button class="button primary" id="reportOrders">Download CSV</button></section>
+          <section class="card stat"><div class="stat-icon">♙</div><h3>Customers report</h3><p class="muted">Customer name, email, order count, and spending.</p><button class="button primary" id="reportCustomers">Download CSV</button></section>
+          <section class="card stat"><div class="stat-icon">₹</div><h3>Summary report</h3><p class="muted">Key metrics shown in this demo.</p><button class="button primary" id="reportSummary">Download CSV</button></section>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div class="toast-area" id="toastArea" aria-live="polite"></div>
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal"><div class="modal-header"><h3 id="modalTitle">Details</h3><button class="icon-button" id="modalClose" aria-label="Close dialog">×</button></div><div id="modalBody"></div><div class="modal-actions" id="modalActions"></div></div>
   </div>
-
-  <div class="user">
-    <div class="avatar">AM</div>
-    <div><b>Alex Morgan</b><small>Workspace admin</small></div>
-    <button class="more" id="profile">···</button>
-  </div>
-</aside>
-
-<main>
-<header class="topbar">
-  <div style="display:flex;align-items:center;gap:13px">
-    <button class="iconbtn mobile" id="menu" aria-label="Open navigation">☰</button>
-    <div class="crumb">Workspace <span style="color:var(--line);padding:0 7px">/</span><b id="crumb">Overview</b></div>
-  </div>
-  <div class="actions">
-    <label class="search">
-      <span>⌕</span>
-      <input id="search" type="search" placeholder="Search orders..." aria-label="Search orders">
-    </label>
-    <button class="iconbtn" id="theme" aria-label="Toggle light and dark mode" title="Toggle theme">☼</button>
-    <button class="iconbtn" id="notify" aria-label="Notifications">♧<i class="dot"></i></button>
-    <div class="avatar">AM</div>
-  </div>
-</header>
-
-<section class="heading">
-  <div>
-    <div class="eyebrow">Tuesday, October 13, 2026 · Live overview</div>
-    <h1 id="title">Good afternoon, Alex <span style="animation:pulse 2s infinite;display:inline-block">✦</span></h1>
-    <p id="subtitle">Here’s what’s happening with your store today.</p>
-  </div>
-  <div class="head-actions">
-    <select class="select" id="period" aria-label="Reporting period">
-      <option value="7">Last 7 days</option>
-      <option value="30" selected>Last 30 days</option>
-      <option value="90">Last 90 days</option>
-    </select>
-    <button class="btn primary" id="create">＋ Create report</button>
-  </div>
-</section>
-
-<section class="grid metrics">
-  <article class="panel metric" style="--iconcolor:var(--cyan);--iconbg:#58e2f51b;--glow:#58e2f51a">
-    <div class="metric-top">Total revenue <span class="metric-icon">↗</span></div>
-    <div class="value" id="revenue">$48,294</div>
-    <div class="metric-foot">
-      <span class="up">↑ 12.8%</span> vs previous period
-      <svg class="spark" viewBox="0 0 60 23"><path d="M1 20L10 16 18 18 27 8 36 12 46 4 53 8 59 2" fill="none" stroke="var(--cyan)" stroke-width="2"/></svg>
-    </div>
-  </article>
-
-  <article class="panel metric" style="--iconcolor:var(--violet);--iconbg:#9c7cff20;--glow:#9c7cff1a">
-    <div class="metric-top">Total orders <span class="metric-icon">▤</span></div>
-    <div class="value" id="orders">2,846</div>
-    <div class="metric-foot">
-      <span class="up">↑ 8.2%</span> vs previous period
-      <svg class="spark" viewBox="0 0 60 23"><path d="M1 20L10 14 18 17 27 11 36 14 46 7 53 8 59 2" fill="none" stroke="var(--violet)" stroke-width="2"/></svg>
-    </div>
-  </article>
-
-  <article class="panel metric" style="--iconcolor:var(--green);--iconbg:#55e2ae1b;--glow:#55e2ae19">
-    <div class="metric-top">Conversion rate <span class="metric-icon">⌁</span></div>
-    <div class="value">3.62%</div>
-    <div class="metric-foot">
-      <span class="up">↑ 1.4%</span> vs previous period
-      <svg class="spark" viewBox="0 0 60 23"><path d="M1 21L10 18 18 12 27 16 36 8 46 10 53 4 59 2" fill="none" stroke="var(--green)" stroke-width="2"/></svg>
-    </div>
-  </article>
-
-  <article class="panel metric" style="--iconcolor:var(--pink);--iconbg:#ff80be1b;--glow:#ff80be18">
-    <div class="metric-top">Active customers <span class="metric-icon">♙</span></div>
-    <div class="value" id="customers">18,492</div>
-    <div class="metric-foot">
-      <span class="down">↓ 2.4%</span> vs previous period
-      <svg class="spark" viewBox="0 0 60 23"><path d="M1 3L10 8 18 6 27 13 36 10 46 17 53 14 59 22" fill="none" stroke="var(--pink)" stroke-width="2"/></svg>
-    </div>
-  </article>
-</section>
-
-<section class="grid middle">
-  <article class="panel">
-    <div class="panel-head">
-      <div>
-        <div class="panel-title">Revenue overview</div>
-        <div class="panel-sub">Revenue performance across your store</div>
-        <div class="summary"><strong id="chartTotal">$48,294</strong><span>↗ 12.8%</span></div>
-      </div>
-      <div>
-        <button class="range active" data-series="revenue">Revenue</button>
-        <button class="range" data-series="orders">Orders</button>
-      </div>
-    </div>
-    <div class="chart-wrap">
-      <svg class="chart" id="chart" viewBox="0 0 640 230" role="img" aria-label="Revenue and orders trend">
-        <defs>
-          <linearGradient id="fill" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stop-color="#58e2f5" stop-opacity=".25"/>
-            <stop offset="1" stop-color="#58e2f5" stop-opacity="0"/>
-          </linearGradient>
-        </defs>
-        <g id="grid"></g>
-        <path id="area" fill="url(#fill)"></path>
-        <path id="line" class="line"></path>
-        <path id="line2" class="line2"></path>
-        <g id="labels"></g>
-      </svg>
-      <div class="legend">
-        <span><i></i><span id="legend1">Revenue</span></span>
-        <span><i class="v"></i><span id="legend2">Orders</span></span>
-      </div>
-    </div>
-  </article>
-
-  <article class="panel">
-    <div class="panel-head">
-      <div><div class="panel-title">Traffic sources</div><div class="panel-sub">Where visitors come from</div></div>
-      <button class="iconbtn" id="traffic" aria-label="Traffic information" style="width:30px;height:30px">···</button>
-    </div>
-    <div style="display:flex;justify-content:center;padding:10px 10px 0">
-      <svg viewBox="0 0 200 155" style="width:200px;height:155px;max-width:100%" role="img" aria-label="Traffic sources donut chart">
-        <circle cx="100" cy="78" r="57" fill="none" stroke="var(--line)" stroke-width="18"/>
-        <circle cx="100" cy="78" r="57" fill="none" stroke="#58e2f5" stroke-width="18" stroke-dasharray="154 358" transform="rotate(-90 100 78)"/>
-        <circle cx="100" cy="78" r="57" fill="none" stroke="#9c7cff" stroke-width="18" stroke-dasharray="93 358" stroke-dashoffset="-161" transform="rotate(-90 100 78)"/>
-        <circle cx="100" cy="78" r="57" fill="none" stroke="#55e2ae" stroke-width="18" stroke-dasharray="65 358" stroke-dashoffset="-260" transform="rotate(-90 100 78)"/>
-        <text x="100" y="75" text-anchor="middle" fill="var(--text)" font-size="22" font-weight="800">24.8k</text>
-        <text x="100" y="94" text-anchor="middle" fill="var(--muted)" font-size="9">VISITORS</text>
-      </svg>
-    </div>
-    <div class="channels">
-      <div class="channel"><div class="channel-icon">↗</div><div><div class="channel-name">Organic search</div><div class="channel-meta">Search engines</div></div><div><div class="channel-val">43.2%</div><div class="channel-change">↑ 4.6%</div></div></div>
-      <div class="channel"><div class="channel-icon">◎</div><div><div class="channel-name">Social media</div><div class="channel-meta">Social platforms</div></div><div><div class="channel-val">26.1%</div><div class="channel-change">↑ 2.1%</div></div></div>
-      <div class="channel"><div class="channel-icon">✉</div><div><div class="channel-name">Email campaigns</div><div class="channel-meta">Newsletter traffic</div></div><div><div class="channel-val">18.4%</div><div class="channel-change">↑ 8.3%</div></div></div>
-      <div class="channel"><div class="channel-icon">⌘</div><div><div class="channel-name">Direct traffic</div><div class="channel-meta">Direct visits</div></div><div><div class="channel-val">12.3%</div><div class="channel-change">↑ 0.9%</div></div></div>
-    </div>
-  </article>
-</section>
-
-<section class="grid lower">
-  <article class="panel">
-    <div class="panel-head">
-      <div><div class="panel-title">Recent orders</div><div class="panel-sub">Track your latest transactions</div></div>
-      <button class="btn" id="viewAll">View all ↗</button>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Customer</th><th>Order ID</th><th>Date</th><th>Amount</th><th>Status</th><th></th></tr></thead>
-        <tbody id="ordersBody">
-          <tr data-search="olivia martin nx 10482 paid"><td><div class="customer"><span class="mini">OM</span>Olivia Martin</div></td><td>#NX-10482</td><td>Oct 13, 2026</td><td><b>$284.00</b></td><td><span class="status paid">Paid</span></td><td><button class="view">View</button></td></tr>
-          <tr data-search="ethan lee nx 10481 pending"><td><div class="customer"><span class="mini orange">EL</span>Ethan Lee</div></td><td>#NX-10481</td><td>Oct 13, 2026</td><td><b>$128.50</b></td><td><span class="status pending">Pending</span></td><td><button class="view">View</button></td></tr>
-          <tr data-search="sophia chen nx 10480 paid"><td><div class="customer"><span class="mini green">SC</span>Sophia Chen</div></td><td>#NX-10480</td><td>Oct 12, 2026</td><td><b>$562.00</b></td><td><span class="status paid">Paid</span></td><td><button class="view">View</button></td></tr>
-          <tr data-search="noah williams nx 10479 failed"><td><div class="customer"><span class="mini blue">NW</span>Noah Williams</div></td><td>#NX-10479</td><td>Oct 12, 2026</td><td><b>$74.99</b></td><td><span class="status failed">Failed</span></td><td><button class="view">View</button></td></tr>
-          <tr data-search="ava patel nx 10478 paid"><td><div class="customer"><span class="mini orange">AP</span>Ava Patel</div></td><td>#NX-10478</td><td>Oct 11, 2026</td><td><b>$319.00</b></td><td><span class="status paid">Paid</span></td><td><button class="view">View</button></td></tr>
-        </tbody>
-      </table>
-      <div class="empty" id="empty">No matching orders found.</div>
-    </div>
-  </article>
-
-  <article class="panel">
-    <div class="panel-head">
-      <div><div class="panel-title">Activity feed</div><div class="panel-sub">Latest workspace updates</div></div>
-      <button class="iconbtn" id="refresh" aria-label="Refresh activity" style="width:31px;height:31px">↻</button>
-    </div>
-    <div class="activity-list" id="activityList">
-      <div class="activity"><div class="activity-icon">＋</div><div><p><b>New order received</b><br>Olivia Martin placed order #NX-10482.</p><time>2 minutes ago</time></div></div>
-      <div class="activity"><div class="activity-icon">♙</div><div><p><b>New customer joined</b><br>Daniel Kim created an account.</p><time>18 minutes ago</time></div></div>
-      <div class="activity"><div class="activity-icon">✓</div><div><p><b>Payment confirmed</b><br>Order #NX-10480 payment was received.</p><time>42 minutes ago</time></div></div>
-      <div class="activity"><div class="activity-icon">↗</div><div><p><b>Weekly report is ready</b><br>Your performance summary is available.</p><time>1 hour ago</time></div></div>
-    </div>
-  </article>
-</section>
-</main>
-
-<div class="toast" id="toast" role="status" aria-live="polite">✓ <span id="toastText">Done</span></div>
-
-<div class="modal-bg" id="modalBg" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-  <div class="modal">
-    <div class="modal-head"><h2 id="modalTitle">Create report</h2><button class="close" id="close" aria-label="Close dialog">×</button></div>
-    <form id="form">
-      <div class="field"><label for="reportName">Report name</label><input id="reportName" required maxlength="60" placeholder="e.g. Monthly revenue"></div>
-      <div class="field"><label for="reportType">Report type</label><select id="reportType"><option>Revenue overview</option><option>Orders summary</option><option>Customer acquisition</option><option>Traffic sources</option></select></div>
-      <div class="field"><label for="reportPeriod">Time period</label><select id="reportPeriod"><option>Last 7 days</option><option selected>Last 30 days</option><option>Last 90 days</option></select></div>
-      <div class="modal-actions"><button type="button" class="btn" id="cancel">Cancel</button><button type="submit" class="btn primary">Generate report ↗</button></div>
-    </form>
-  </div>
-</div>
 
 <script>
 (() => {
-  const $ = s => document.querySelector(s);
-  const $$ = s => [...document.querySelectorAll(s)];
-  let toastTimer;
+  "use strict";
+  const $ = (selector, root = document) => root.querySelector(selector);
+  const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+  const money = value => new Intl.NumberFormat("en-IN", {style:"currency", currency:"INR", maximumFractionDigits:0}).format(value);
+  const safe = value => String(value ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 
-  function toast(msg) {
-    $('#toastText').textContent = msg;
-    $('#toast').classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => $('#toast').classList.remove('show'), 2700);
-  }
-
-  // Dark/light theme
-  if (localStorage.getItem('nexusiq-theme') === 'light') {
-    document.body.classList.add('light');
-  }
-
-  function syncTheme() {
-    $('#theme').textContent =
-      document.body.classList.contains('light') ? '☾' : '☼';
-  }
-
-  syncTheme();
-
-  $('#theme').onclick = () => {
-    document.body.classList.toggle('light');
-    localStorage.setItem(
-      'nexusiq-theme',
-      document.body.classList.contains('light') ? 'light' : 'dark'
-    );
-    syncTheme();
-    toast('Theme updated');
-  };
-
-  // Responsive mobile sidebar
-  const sidebar = $('#sidebar');
-  const overlay = $('#overlay');
-
-  function closeSide() {
-    sidebar.classList.remove('open');
-    overlay.classList.remove('show');
-  }
-
-  $('#menu').onclick = () => {
-    sidebar.classList.toggle('open');
-    overlay.classList.toggle('show');
-  };
-
-  overlay.onclick = closeSide;
-
-  // Sidebar navigation
-  const copy = {
-    Overview: ['Good afternoon, Alex ✦', "Here’s what’s happening with your store today."],
-    Analytics: ['Analytics overview', 'Explore performance trends and discover what moves your business forward.'],
-    Customers: ['Customer center', 'Understand your audience and keep every relationship moving.'],
-    Orders: ['Order management', 'Review recent transactions and keep fulfillment on track.'],
-    Products: ['Product insights', 'Track your catalog performance from one focused workspace.'],
-    Reports: ['Reports library', 'Create a snapshot of the metrics that matter most.'],
-    Integrations: ['Connected apps', 'Manage the tools and services powering your workspace.'],
-    Settings: ['Workspace settings', 'Personalize your dashboard experience.']
-  };
-
-  $$('.nav button').forEach(button => {
-    button.onclick = () => {
-      $$('.nav button').forEach(item => item.classList.remove('active'));
-      button.classList.add('active');
-
-      const page = button.dataset.page;
-      $('#crumb').textContent = page;
-      $('#title').textContent = copy[page][0];
-      $('#subtitle').textContent = copy[page][1];
-
-      closeSide();
-
-      if (page === 'Reports') openModal();
-      else if (page === 'Settings') toast('Use the theme control to personalize your workspace');
-      else if (page === 'Integrations') toast('Sample integrations are up to date');
-      else if (page !== 'Overview') toast(page + ' selected · sample dashboard data shown');
-    };
-  });
-
-  // Interactive SVG chart
-  const series = {
-    revenue: [24,31,28,38,35,44,41,51,47,59,53,65],
-    orders: [18,22,20,29,26,31,34,38,36,43,40,49]
-  };
-
-  const labels = [
-    'Sep 15','Sep 18','Sep 21','Sep 24','Sep 27','Sep 30',
-    'Oct 3','Oct 6','Oct 9','Oct 11','Oct 12','Oct 13'
+  let orders = [
+    {id:"NX-1048",name:"Priya Sharma",email:"priya@example.com",initials:"PS",date:"13 Oct 2026",amount:12499,status:"Delivered"},
+    {id:"NX-1047",name:"Rahul Verma",email:"rahul@example.com",initials:"RV",date:"13 Oct 2026",amount:8299,status:"Paid"},
+    {id:"NX-1046",name:"Ananya Reddy",email:"ananya@example.com",initials:"AR",date:"12 Oct 2026",amount:4599,status:"Pending"},
+    {id:"NX-1045",name:"Karthik Rao",email:"karthik@example.com",initials:"KR",date:"12 Oct 2026",amount:2199,status:"Cancelled"},
+    {id:"NX-1044",name:"Meera Iyer",email:"meera@example.com",initials:"MI",date:"11 Oct 2026",amount:6799,status:"Delivered"},
+    {id:"NX-1043",name:"Arjun Nair",email:"arjun@example.com",initials:"AN",date:"10 Oct 2026",amount:1399,status:"Paid"},
+    {id:"NX-1042",name:"Sneha Das",email:"sneha@example.com",initials:"SD",date:"09 Oct 2026",amount:3499,status:"Pending"}
   ];
+  let customers = [
+    {name:"Priya Sharma",email:"priya@example.com",initials:"PS",count:4,spent:38450,last:"13 Oct 2026"},
+    {name:"Rahul Verma",email:"rahul@example.com",initials:"RV",count:3,spent:22490,last:"13 Oct 2026"},
+    {name:"Ananya Reddy",email:"ananya@example.com",initials:"AR",count:2,spent:9180,last:"12 Oct 2026"},
+    {name:"Karthik Rao",email:"karthik@example.com",initials:"KR",count:5,spent:16700,last:"12 Oct 2026"},
+    {name:"Meera Iyer",email:"meera@example.com",initials:"MI",count:6,spent:54200,last:"11 Oct 2026"},
+    {name:"Arjun Nair",email:"arjun@example.com",initials:"AN",count:1,spent:1399,last:"10 Oct 2026"}
+  ];
+  let searchTerm = "";
+  let nextOrder = 1049;
 
-  let active = 'revenue';
+  const statusClass = status => ({Paid:"paid",Delivered:"delivered",Pending:"pending",Cancelled:"cancelled"}[status] || "pending");
+  function row(order) {
+    return `<tr><td><strong>${safe(order.id)}</strong></td><td><div class="customer"><div class="customer-icon">${safe(order.initials)}</div><div><strong>${safe(order.name)}</strong><small>${safe(order.email)}</small></div></div></td><td>${safe(order.date)}</td><td><strong>${money(order.amount)}</strong></td><td><span class="status ${statusClass(order.status)}">${safe(order.status)}</span></td><td><button class="text-button" data-order="${safe(order.id)}">View details</button></td></tr>`;
+  }
+  function render() {
+    const status = $("#statusFilter")?.value || "all";
+    const filtered = orders.filter(o => `${o.id} ${o.name} ${o.email} ${o.status}`.toLowerCase().includes(searchTerm) && (status === "all" || o.status.toLowerCase() === status.toLowerCase()));
+    $("#recentOrders").innerHTML = orders.slice(0,5).map(row).join("");
+    $("#allOrders").innerHTML = filtered.map(row).join("");
+    $("#ordersEmpty").classList.toggle("hidden", filtered.length > 0);
+    $("#orderCount").textContent = `${filtered.length} order${filtered.length === 1 ? "" : "s"} shown`;
+    $("#navOrderCount").textContent = orders.length;
+    $("#customerRows").innerHTML = customers.filter(c => `${c.name} ${c.email}`.toLowerCase().includes(searchTerm)).map(c =>
+      `<tr><td><div class="customer"><div class="customer-icon">${safe(c.initials)}</div><div><strong>${safe(c.name)}</strong><small>${safe(c.email)}</small></div></div></td><td>${c.count}</td><td><strong>${money(c.spent)}</strong></td><td>${safe(c.last)}</td></tr>`
+    ).join("");
+  }
+  function notify(message) {
+    const el = document.createElement("div"); el.className = "toast"; el.textContent = message;
+    $("#toastArea").append(el); setTimeout(() => el.remove(), 3200);
+  }
+  function closeModal() { $("#modalBackdrop").classList.remove("show"); }
+  function modal(title, html, actions = '<button class="button" id="cancelModal">Close</button>') {
+    $("#modalTitle").textContent = title; $("#modalBody").innerHTML = html; $("#modalActions").innerHTML = actions;
+    $("#modalBackdrop").classList.add("show");
+    $("#modalClose").focus();
+    $("#cancelModal")?.addEventListener("click", closeModal);
+  }
+  function navigate(page) {
+    $$(".nav-btn[data-page]").forEach(btn => btn.classList.toggle("active", btn.dataset.page === page));
+    $$(".page-panel").forEach(panel => panel.classList.toggle("active", panel.id === `panel-${page}`));
+    const title = {overview:["Overview","Here’s what’s happening with your store."],orders:["Orders","Review and manage transactions."],customers:["Customers","Keep customer information organized."],analytics:["Analytics","Understand your store performance."],reports:["Reports","Download summaries from demo data."]}[page];
+    $("#pageTitle").textContent = title[0]; $("#pageSubtitle").textContent = title[1];
+    document.body.classList.remove("menu-open"); $("#menuButton").setAttribute("aria-expanded","false");
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  function csvDownload(filename, rows) {
+    const content = rows.map(r => r.map(v => `"${String(v ?? "").replace(/"/g,'""')}"`).join(",")).join("\r\n");
+    const url = URL.createObjectURL(new Blob(["\uFEFF"+content], {type:"text/csv;charset=utf-8;"}));
+    const a = document.createElement("a"); a.href = url; a.download = filename; document.body.append(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    notify(`${filename} downloaded.`);
+  }
+  function exportOrders() { csvDownload("nexusiq-orders.csv", [["Order ID","Customer","Email","Date","Amount INR","Status"],...orders.map(o => [o.id,o.name,o.email,o.date,o.amount,o.status])]); }
+  function exportCustomers() { csvDownload("nexusiq-customers.csv", [["Name","Email","Orders","Total spent INR","Last order"],...customers.map(c => [c.name,c.email,c.count,c.spent,c.last])]); }
+  function exportSummary() { csvDownload("nexusiq-summary.csv", [["Metric","Value"],["Total revenue","842560"],["Total orders","1284"],["Conversion rate","3.62%"],["Active customers","5849"]]); }
 
-  function chart(type = 'revenue') {
-    active = type;
-
-    const primary = series[type];
-    const secondary = series[type === 'revenue' ? 'orders' : 'revenue'];
-    const width = 640;
-    const height = 230;
-    const left = 38;
-    const right = 14;
-    const top = 15;
-    const plotHeight = 188;
-    const plotWidth = width - left - right;
-
-    const points = primary.map((value, index) => [
-      left + index * plotWidth / 11,
-      top + (70 - value) / 70 * plotHeight
-    ]);
-
-    const points2 = secondary.map((value, index) => [
-      left + index * plotWidth / 11,
-      top + (70 - value) / 70 * plotHeight
-    ]);
-
-    const path = pointsArray =>
-      pointsArray.map((point, index) =>
-        (index ? 'L' : 'M') +
-        point[0].toFixed(1) + ' ' +
-        point[1].toFixed(1)
-      ).join(' ');
-
-    $('#grid').innerHTML = [0,20,40,60].map(value => {
-      const y = top + (70 - value) / 70 * plotHeight;
-      const prefix = type === 'revenue' ? '$' : '';
-      const suffix = type === 'orders' ? '' : 'k';
-
-      return `
-        <line class="gridline" x1="${left}" y1="${y}"
-          x2="${width-right}" y2="${y}"></line>
-        <text x="${left-8}" y="${y+3}" text-anchor="end">
-          ${prefix}${value}${suffix}
-        </text>`;
-    }).join('');
-
-    $('#labels').innerHTML = labels.map((label, index) =>
-      index % 2 === 0
-        ? `<text x="${points[index][0]}" y="225" text-anchor="middle">${label}</text>`
-        : ''
-    ).join('');
-
-    $('#line').setAttribute('d', path(points));
-    $('#line2').setAttribute('d', path(points2));
-
-    $('#area').setAttribute(
-      'd',
-      path(points) +
-      ` L ${points[11][0]} ${top+plotHeight}` +
-      ` L ${points[0][0]} ${top+plotHeight} Z`
-    );
-
-    $('#line').style.stroke =
-      type === 'revenue' ? 'var(--cyan)' : 'var(--violet)';
-
-    $('#line2').style.stroke =
-      type === 'revenue' ? 'var(--violet)' : 'var(--cyan)';
-
-    $('#legend1').textContent = type === 'revenue' ? 'Revenue' : 'Orders';
-    $('#legend2').textContent = type === 'revenue' ? 'Orders' : 'Revenue';
-
-    $('#chartTotal').textContent =
-      type === 'revenue'
-        ? $('#revenue').textContent
-        : $('#orders').textContent + ' orders';
-
-    $$('.range').forEach(button => {
-      button.classList.toggle('active', button.dataset.series === type);
+  function viewOrder(id) {
+    const o = orders.find(item => item.id === id); if (!o) return;
+    modal(`Order ${o.id}`, `<div class="customer"><div class="customer-icon">${safe(o.initials)}</div><div><strong>${safe(o.name)}</strong><small>${safe(o.email)}</small></div></div>
+      <div class="field"><label>Order date</label><div>${safe(o.date)}</div></div><div class="field"><label>Amount</label><strong>${money(o.amount)}</strong></div>
+      <div class="field"><label>Status</label><span class="status ${statusClass(o.status)}">${safe(o.status)}</span></div>
+      <p class="muted">Demo record only. No real payment is connected.</p>`,
+      '<button class="button" id="cancelModal">Close</button><button class="button primary" id="nextStatus">Change status</button>');
+    $("#nextStatus").addEventListener("click", () => {
+      const statuses = ["Pending","Paid","Delivered","Cancelled"];
+      o.status = statuses[(statuses.indexOf(o.status)+1) % statuses.length];
+      render(); closeModal(); notify(`${o.id} status changed to ${o.status}.`);
+    });
+  }
+  function addCustomer() {
+    modal("Add customer", `<p class="muted">Add a sample customer to this dashboard.</p><form id="customerForm"><div class="field"><label for="customerName">Full name</label><input id="customerName" name="name" required maxlength="80" placeholder="e.g. Kavya Rao"></div><div class="field"><label for="customerEmail">Email address</label><input id="customerEmail" name="email" type="email" required maxlength="120" placeholder="name@example.com"></div></form>`,
+      '<button class="button" id="cancelModal">Cancel</button><button class="button primary" id="saveCustomer">Save customer</button>');
+    $("#saveCustomer").addEventListener("click", () => {
+      const form = $("#customerForm"); if (!form.reportValidity()) return;
+      const data = new FormData(form), name = data.get("name").trim(), email = data.get("email").trim();
+      if (customers.some(c => c.email.toLowerCase() === email.toLowerCase())) { notify("That email is already registered."); return; }
+      const initials = name.split(/\s+/).map(part => part[0]).join("").slice(0,2).toUpperCase();
+      customers.unshift({name,email,initials,count:0,spent:0,last:"—"});
+      closeModal(); render(); notify(`${name} added to the sample customer list.`);
+      $("#activityList").insertAdjacentHTML("afterbegin", `<div class="activity-item"><div class="activity-symbol">♙</div><div><strong>New customer added</strong><small>${safe(name)} · Just now</small></div></div>`);
+    });
+  }
+  function addOrder() {
+    if (!customers.length) { notify("Add a customer before creating an order."); return; }
+    modal("Create order", `<p class="muted">This creates a sample order only. No payment will be processed.</p><form id="orderForm"><div class="field"><label for="orderCustomer">Customer</label><select id="orderCustomer" name="customer" required>${customers.map(c => `<option value="${safe(c.email)}">${safe(c.name)}</option>`).join("")}</select></div><div class="field"><label for="orderAmount">Amount (₹)</label><input id="orderAmount" name="amount" type="number" min="1" max="10000000" required placeholder="Enter amount"></div><div class="field"><label for="orderStatus">Status</label><select id="orderStatus" name="status"><option>Pending</option><option>Paid</option><option>Delivered</option></select></div></form>`,
+      '<button class="button" id="cancelModal">Cancel</button><button class="button primary" id="saveOrder">Create order</button>');
+    $("#saveOrder").addEventListener("click", () => {
+      const form = $("#orderForm"); if (!form.reportValidity()) return;
+      const data = new FormData(form), customer = customers.find(c => c.email === data.get("customer")), amount = Number(data.get("amount"));
+      if (!customer || !Number.isFinite(amount) || amount <= 0) { notify("Enter valid order details."); return; }
+      const id = `NX-${nextOrder++}`, date = new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"});
+      orders.unshift({id,name:customer.name,email:customer.email,initials:customer.initials,date,amount,status:data.get("status")});
+      customer.count++; customer.spent += amount; customer.last = date;
+      closeModal(); render(); notify(`${id} created. No payment was processed.`);
+      $("#activityList").insertAdjacentHTML("afterbegin", `<div class="activity-item"><div class="activity-symbol">＋</div><div><strong>New order ${safe(id)}</strong><small>${safe(customer.name)} · Just now</small></div></div>`);
     });
   }
 
-  chart();
-
-  $$('.range').forEach(button => {
-    button.onclick = () => chart(button.dataset.series);
+  $$(".nav-btn[data-page]").forEach(btn => btn.addEventListener("click", () => navigate(btn.dataset.page)));
+  $$("[data-goto]").forEach(btn => btn.addEventListener("click", () => navigate(btn.dataset.goto)));
+  document.addEventListener("click", event => {
+    const button = event.target.closest("[data-order]");
+    if (button) viewOrder(button.dataset.order);
   });
-
-  // Reporting period selector
-  $('#period').onchange = event => {
-    const days = Number(event.target.value);
-    const scale = days === 7 ? 0.38 : days === 90 ? 2.45 : 1;
-
-    $('#revenue').textContent =
-      '$' + Math.round(48294 * scale).toLocaleString('en-US');
-
-    $('#orders').textContent =
-      Math.round(2846 * scale).toLocaleString('en-US');
-
-    $('#customers').textContent =
-      Math.round(18492 * (days === 7 ? 0.52 : days === 90 ? 1.6 : 1))
-        .toLocaleString('en-US');
-
-    $('#chartTotal').textContent =
-      active === 'revenue'
-        ? $('#revenue').textContent
-        : $('#orders').textContent + ' orders';
-
-    toast('Showing last ' + days + ' days');
-  };
-
-  // Search and filter orders
-  $('#search').oninput = event => {
-    const query = event.target.value.toLowerCase().trim();
-    let count = 0;
-
-    $$('#ordersBody tr').forEach(row => {
-      const matches = (
-        row.dataset.search + ' ' + row.innerText.toLowerCase()
-      ).includes(query);
-
-      row.style.display = matches ? '' : 'none';
-      if (matches) count++;
-    });
-
-    $('#empty').style.display = count ? 'none' : 'block';
-
-    if (query) {
-      $('#crumb').textContent = 'Search results';
-      $('#subtitle').textContent =
-        count + ' matching order' + (count === 1 ? '' : 's') +
-        ' for “' + query + '”.';
-    } else {
-      const page = $('.nav button.active').dataset.page;
-      $('#crumb').textContent = page;
-      $('#subtitle').textContent = copy[page][1];
-    }
-  };
-
-  // Create report modal
-  const modal = $('#modalBg');
-
-  function openModal() {
-    modal.classList.add('open');
-    setTimeout(() => $('#reportName').focus(), 40);
-  }
-
-  function closeModal() {
-    modal.classList.remove('open');
-  }
-
-  $('#create').onclick = openModal;
-  $('#close').onclick = closeModal;
-  $('#cancel').onclick = closeModal;
-
-  modal.onclick = event => {
-    if (event.target === modal) closeModal();
-  };
-
-  document.onkeydown = event => {
-    if (event.key === 'Escape') {
-      closeModal();
-      closeSide();
-    }
-  };
-
-  function escapeHtml(value) {
-    return value.replace(/[&<>"']/g, character => ({
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#39;'
-    })[character]);
-  }
-
-  $('#form').onsubmit = event => {
-    event.preventDefault();
-
-    const name = $('#reportName').value.trim();
-    const type = $('#reportType').value;
-    const period = $('#reportPeriod').value;
-
-    if (!name) return;
-
-    closeModal();
-    toast('“' + name + '” report generated');
-
-    const activity = document.createElement('div');
-    activity.className = 'activity';
-
-    activity.innerHTML = `
-      <div class="activity-icon">▧</div>
-      <div>
-        <p><b>Report generated</b><br>
-        ${escapeHtml(name)} · ${escapeHtml(type)}</p>
-        <time>Just now · ${escapeHtml(period)}</time>
-      </div>`;
-
-    $('#activityList').prepend(activity);
-    $('#reportName').value = '';
-  };
-
-  // Order detail buttons
-  $$('.view').forEach(button => {
-    button.onclick = () => {
-      const row = button.closest('tr');
-
-      toast(
-        row.children[1].textContent + ' · ' +
-        row.children[0].innerText + ' · ' +
-        row.children[3].innerText + ' · ' +
-        row.children[4].innerText
-      );
-    };
+  $("#searchInput").addEventListener("input", event => { searchTerm = event.target.value.trim().toLowerCase(); render(); });
+  $("#statusFilter").addEventListener("change", render);
+  $("#menuButton").addEventListener("click", () => {
+    const open = document.body.classList.toggle("menu-open");
+    $("#menuButton").setAttribute("aria-expanded", String(open));
   });
+  $("#overlay").addEventListener("click", () => { document.body.classList.remove("menu-open"); $("#menuButton").setAttribute("aria-expanded","false"); });
+  function toggleTheme() {
+    document.body.classList.toggle("dark");
+    const mode = document.body.classList.contains("dark") ? "dark" : "light";
+    try { localStorage.setItem("nexusiq-theme", mode); } catch (_) {}
+    notify(`${mode === "dark" ? "Dark" : "Light"} mode enabled.`);
+  }
+  try { if (localStorage.getItem("nexusiq-theme") === "dark") document.body.classList.add("dark"); } catch (_) {}
+  $("#themeButton").addEventListener("click", toggleTheme);
+  $("#sidebarTheme").addEventListener("click", toggleTheme);
+  $("#modalClose").addEventListener("click", closeModal);
+  $("#modalBackdrop").addEventListener("click", event => { if (event.target === $("#modalBackdrop")) closeModal(); });
+  document.addEventListener("keydown", event => { if (event.key === "Escape") { closeModal(); document.body.classList.remove("menu-open"); } });
 
-  // View all orders
-  $('#viewAll').onclick = () => {
-    $('[data-page="Orders"]').click();
-    $('#search').value = '';
-
-    $$('#ordersBody tr').forEach(row => {
-      row.style.display = '';
-    });
-
-    $('#empty').style.display = 'none';
-    toast('Showing all sample orders');
-  };
-
-  // Notifications and other controls
-  $('#notify').onclick = () =>
-    toast('You’re all caught up — 2 updates reviewed');
-
-  $('#traffic').onclick = () =>
-    toast('Traffic distribution for the current sample period');
-
-  $('#refresh').onclick = () => {
-    $('#activityList').animate(
-      [
-        {opacity:.3, transform:'translateY(4px)'},
-        {opacity:1, transform:'translateY(0)'}
-      ],
-      {duration:350}
-    );
-
-    toast('Activity feed refreshed');
-  };
-
-  $('#profile').onclick = () =>
-    toast('Alex Morgan · Workspace admin');
+  $("#exportSummary").addEventListener("click", exportSummary);
+  $("#ordersExport").addEventListener("click", exportOrders);
+  $("#analyticsExport").addEventListener("click", exportSummary);
+  $("#reportOrders").addEventListener("click", exportOrders);
+  $("#reportCustomers").addEventListener("click", exportCustomers);
+  $("#reportSummary").addEventListener("click", exportSummary);
+  $("#openReports").addEventListener("click", () => navigate("reports"));
+  $("#createOrder").addEventListener("click", addOrder);
+  $("#createCustomer").addEventListener("click", addCustomer);
+  $("#addCustomerPage").addEventListener("click", addCustomer);
+  $("#openSettings").addEventListener("click", () => modal("Dashboard settings", `<p class="muted">Choose how the dashboard looks on this device.</p><div class="field"><label for="themeChoice">Appearance</label><select id="themeChoice"><option value="light">Light</option><option value="dark">Dark</option></select></div>`,
+    '<button class="button" id="cancelModal">Cancel</button><button class="button primary" id="saveTheme">Save settings</button>'));
+  document.addEventListener("click", event => {
+    if (event.target.id === "saveTheme") {
+      const dark = $("#themeChoice").value === "dark";
+      document.body.classList.toggle("dark", dark);
+      try { localStorage.setItem("nexusiq-theme", dark ? "dark" : "light"); } catch (_) {}
+      closeModal(); notify("Appearance settings saved.");
+    }
+  });
+  $("#helpButton").addEventListener("click", () => modal("Help & support", "<p>This is a standalone dashboard demo.</p><p>• Use the sidebar to change sections.<br>• Search orders and customers from the top bar.<br>• Download CSV reports from Reports.<br>• Use Quick actions to create sample records.</p><p class='muted'>This page is not connected to a live database or payment gateway.</p>"));
+  $("#notificationsButton").addEventListener("click", () => modal("Notifications", "<p><strong>Recent updates</strong></p><p>• Order NX-1048 was delivered.<br>• A new customer joined your store.<br>• A payment was received.</p><p class='muted'>These are illustrative demo notifications.</p>"));
+  $("#trafficDetails").addEventListener("click", () => modal("Traffic source details", "<p>Direct: 38.4% · Organic search: 29.6% · Social media: 19.2% · Referral: 12.8%</p><p class='muted'>Connect a real analytics source before using these figures for business decisions.</p>"));
+  $("#activityButton").addEventListener("click", () => modal("Recent activity", "<p>Activity includes sample order, customer, and payment updates.</p><p class='muted'>Activity history is not stored on a server in this demo.</p>"));
+  $("#periodButton").addEventListener("click", () => {
+    const options = ["Last 7 days","Last 30 days","Last 90 days","This year"];
+    const current = $("#periodLabel").textContent;
+    const next = options[(options.indexOf(current)+1) % options.length];
+    $("#periodLabel").textContent = next;
+    $("#chartPeriod").value = next === "Last 7 days" ? "week" : next === "This year" ? "year" : "month";
+    notify(`Selected ${next}. Metrics are sample data.`);
+  });
+  $("#chartPeriod").addEventListener("change", event => {
+    const labels = {week:"Last 7 days",month:"Last 30 days",year:"This year"};
+    $("#periodLabel").textContent = labels[event.target.value];
+    notify(`Selected ${labels[event.target.value]}. Chart is illustrative.`);
+  });
+  render();
 })();
 </script>
 </body>
